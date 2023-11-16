@@ -1,10 +1,11 @@
-import { Card } from '@/app/ui/dashboard/cards';
+// import { Card } from '@/app/ui/dashboard/cards';
 import RevenueChart from '@/app/ui/dashboard/revenue-chart';
 import LatestInvoices from '@/app/ui/dashboard/latest-invoices';
 import { lusitana } from '@/app/ui/fonts';
-import { fetchRevenue, fetchLatestInvoices, fetchCardData } from '@/app/lib/data';
+// import { fetchRevenue, fetchLatestInvoices, fetchCardData } from '@/app/lib/data';
 import { Suspense } from 'react';
-import { RevenueChartSkeleton } from '@/app/ui/skeletons';
+import { RevenueChartSkeleton, LatestInvoicesSkeleton, CardSkeleton } from '@/app/ui/skeletons';
+import CardWrapper from '@/app/ui/dashboard/cards';
 
 export default async function Page() {
     // A "waterfall" refers to a sequence of network requests that depend on the completion of previous requests.In the case of data fetching, each request can only begin once the previous request has returned data.
@@ -14,13 +15,13 @@ export default async function Page() {
     // You can wrap your dynamic components in Suspense.Then, pass it a fallback component to show while the dynamic component loads.
 
     // const revenue = await fetchRevenue();
-    const latestInvoices = await fetchLatestInvoices();
-    const {
-        totalPaidInvoices,
-        totalPendingInvoices,
-        numberOfInvoices,
-        numberOfCustomers
-    } = await fetchCardData();
+    // const latestInvoices = await fetchLatestInvoices();
+    // const {
+    //     totalPaidInvoices,
+    //     totalPendingInvoices,
+    //     numberOfInvoices,
+    //     numberOfCustomers
+    // } = await fetchCardData();
     // Parallel data fetching https://nextjs.org/learn/dashboard-app/fetching-data#parallel-data-fetching
     // const data = await Promise.all([
     //     fetchRevenue(),
@@ -34,7 +35,7 @@ export default async function Page() {
                 Dashboard
             </h1>
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-                <Card
+                {/* <Card
                     title="Collected"
                     value={totalPaidInvoices}
                     type="collected" />
@@ -50,7 +51,10 @@ export default async function Page() {
                     title="Total Customers"
                     value={numberOfCustomers}
                     type="customers"
-                />
+                /> */}
+                <Suspense fallback={<CardSkeleton />}>
+                    <CardWrapper />
+                </Suspense>
             </div>
             <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-4 lg:grid-cols-8">
                 <Suspense fallback={<RevenueChartSkeleton />}>
@@ -58,7 +62,10 @@ export default async function Page() {
                 </Suspense>
                 {/* update the <RevenueChart> component to fetch its own data and remove the prop passed to it: */}
                 {/* <RevenueChart revenue={revenue} /> */}
-                <LatestInvoices latestInvoices={latestInvoices} />
+                <Suspense fallback={<LatestInvoicesSkeleton />}>
+                    <LatestInvoices/>
+                        </Suspense>
+                {/* <LatestInvoices latestInvoices={latestInvoices} /> */}
             </div>
         </main>
     );
